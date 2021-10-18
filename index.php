@@ -4,6 +4,7 @@
    require_once "conf/Conexao.php";
    $title = "Lista de Carros";
    $procurar = isset($_POST["procurar"]) ? $_POST["procurar"] : ""; 
+   $cnst = isset($_POST["cnst"]) ? $_POST["cnst"] : "";
 ?>
 <html>
 <head>
@@ -29,7 +30,6 @@
             <td><b>Média km/por ano </b></td>
             <td><b>Valor de Revenda </b></td>
         </tr>
-        <?php $cnst = "";?>
         <input type="radio" id="1" name="cnst" value="1">Nome<br>
         <input type="radio" id="2" name="cnst" value="2">Valor<br>
         <input type="radio" id="3" name="cnst" value="3">Km<br>
