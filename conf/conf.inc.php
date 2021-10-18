@@ -2,7 +2,7 @@
 
     // Banco de Dados
     define('HOST', 'localhost');  
-    define('DBNAME', 'ifc2');    
+    define('DBNAME', 'ifc1');    
     define('USER', 'root');  
     define('PASSWORD','');
 
@@ -12,6 +12,6 @@
     define('CHARSET', 'utf8');
 
     // Geral da Aplicação
-    define('NOME_DO_PROJETO','CRUD02');
+    define('NOME_DO_PROJETO','CRUD-R-03');
     define('DESCRICAO_DO_PROJETO','Um Pequeno exemplo usando PDO');
 ?>

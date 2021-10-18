@@ -9,14 +9,7 @@
 <head>
     <meta charset="UTF-8">
     <title> <?php echo $title; ?> </title>
-    <style>
-        .ap{
-            color: blue;
-        }
-        .rp{
-            color: red;
-        }
-    </style>
+    <link rel="stylesheet" href="css/estilo.css">
 </head>
 <body>
     <form method="post">
@@ -36,45 +29,66 @@
             <td><b>Média km/por ano </b></td>
             <td><b>Valor de Revenda </b></td>
         </tr>
-        <?php $consulta = ""; ?>
-        <input type="radio" id="1" name="consulta" value="1">Nome<br>
-        <input type="radio" id="2" name="consulta" value="2">Valor<br>
-        <input type="radio" id="3" name="consulta" value="3">Km<br>
+        <?php $cnst = "";?>
+        <input type="radio" id="1" name="cnst" value="1">Nome<br>
+        <input type="radio" id="2" name="cnst" value="2">Valor<br>
+        <input type="radio" id="3" name="cnst" value="3">Km<br>
         <?php
             $pdo = Conexao::getInstance();
-            if ($consulta == 1) {
-                $consulta = $pdo->query("SELECT * FROM carro 
-                WHERE nome LIKE '$procurar%' 
-                ORDER BY nome");  
 
-            }elseif ($consulta == 2) {
-                $consulta = $pdo->query("SELECT * FROM carro 
-                WHERE valor LIKE '$procurar%' 
-                ORDER BY valor<="); 
-                 
+            if($cnst == 1) {
+            $consulta = $pdo->query("SELECT * FROM carro 
+                                    WHERE nome LIKE '$procurar%' 
+                                    ORDER BY nome");
+
+            }else if($cnst == 2) {
+            $consulta = $pdo->query("SELECT * FROM carro 
+                                    WHERE valor <= '$procurar%' 
+                                    ORDER BY valor;");  
+                
             }else{
-                $consulta == $pdo->query("SELECT * FROM carro 
-                WHERE km LIKE '$procurar%' 
-                ORDER BY km<="); 
+            $consulta = $pdo->query("SELECT * FROM carro 
+                                    WHERE km <= '$procurar%' 
+                                    ORDER BY km;");
             }
             while ($linha = $consulta->fetch(PDO::FETCH_ASSOC)) { 
-               
-
+            
+                
             $hoje = date("Y");
             $df = date("Y", strtotime($linha['dataFabricacao']));
             
             $uso = $hoje - $df;
+            $class1 = "red";
+            if ($uso <= 10) {
+                $uso = $hoje - $df;
+                $class1 = "blue";
+
+            }
+            $media = ($linha['km'])/$uso;
+            $class = "red";
+            if ($linha['km'] <= 100000) {
+                $media = ($linha['km'])/$uso;
+                $class = "blue";
+    
+            }
+        
+            $revenda = $linha['valor'];
             if ($uso > 10) {
-                
+                $revenda = $linha['valor'] - (10/100);
+
+            }else if($linha['km'] > 100000) {
+                $revenda = $linha['valor'] - (10/100);
             }
         ?>
 	    <tr>
             <td><?php echo $linha['id'];?></td>
             <td><?php echo $linha['nome'];?></td>
-            <td><?php echo $linha['valor'];?></td>
-            <td><?php echo $linha['km'];?></td>
+            <td><?php echo number_format($linha['valor'], 2, ',', '.');?></td>
+            <td class="<?php echo $class;?>"><?php echo number_format($linha['km'], 0, ',', '.');?></td>
             <td><?php echo date("d/m/y", strtotime($linha['dataFabricacao']));?></td>
-            <td><?php echo $uso ?></td>
+            <td class="<?php echo $class1;?>"><?php echo $uso;?></td>
+            <td><?php echo number_format($media, 0, ',', '.');?></td>
+            <td><?php echo number_format($revenda, 2, ',', '.');?></td>
 	    </tr>
             <?php } ?>       
         </table>
