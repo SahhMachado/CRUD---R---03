@@ -30,26 +30,26 @@
             <td><b>Média km/por ano </b></td>
             <td><b>Valor de Revenda </b></td>
         </tr>
-        <input type="radio" id="1" name="cnst" value="1">Nome<br>
-        <input type="radio" id="2" name="cnst" value="2">Valor<br>
-        <input type="radio" id="3" name="cnst" value="3">Km<br>
+        <input type="radio" id="1" name="cnst" value="1" <?php if($cnst == "1"){echo "checked";}?>>Nome<br>
+        <input type="radio" id="2" name="cnst" value="2" <?php if($cnst == "2"){echo "checked";}?>>Valor<br>
+        <input type="radio" id="3" name="cnst" value="3" <?php if($cnst == "3"){echo "checked";}?>>Km<br>
         <?php
             $pdo = Conexao::getInstance();
 
             if($cnst == 1) {
-            $consulta = $pdo->query("SELECT * FROM carro 
-                                    WHERE nome LIKE '$procurar%' 
-                                    ORDER BY nome");
-
+                $consulta = $pdo->query("SELECT * FROM carro
+                                        WHERE nome LIKE '$procurar%' 
+                                        ORDER BY nome");
+    
             }else if($cnst == 2) {
-            $consulta = $pdo->query("SELECT * FROM carro 
-                                    WHERE valor <= '$procurar%' 
-                                    ORDER BY valor;");  
-                
-            }else{
-            $consulta = $pdo->query("SELECT * FROM carro 
-                                    WHERE km <= '$procurar%' 
-                                    ORDER BY km;");
+                $consulta = $pdo->query("SELECT * FROM carro
+                                        WHERE valor <= '$procurar%' 
+                                        ORDER BY valor");  
+
+            }else {
+                $consulta = $pdo->query("SELECT * FROM carro
+                                        WHERE km <= '$procurar%' 
+                                        ORDER BY km");
             }
             while ($linha = $consulta->fetch(PDO::FETCH_ASSOC)) { 
             
@@ -61,23 +61,29 @@
             $class1 = "red";
             if ($uso <= 10) {
                 $uso = $hoje - $df;
-                $class1 = "blue";
+                $class1 = "black";
 
             }
             $media = ($linha['km'])/$uso;
             $class = "red";
             if ($linha['km'] <= 100000) {
                 $media = ($linha['km'])/$uso;
-                $class = "blue";
+                $class = "black";
     
             }
         
             $revenda = $linha['valor'];
             if ($uso > 10) {
-                $revenda = $linha['valor'] - (10/100);
+                $desconto = $linha['valor'] * (10/100);
+                $revenda = $linha['valor'] - $desconto;
 
             }else if($linha['km'] > 100000) {
-                $revenda = $linha['valor'] - (10/100);
+                $desconto = $linha['valor'] * (10/100);
+                $revenda = $linha['valor'] - $desconto;
+
+            }elseif($linha['km'] > 100000 && $uso > 10){
+                $desconto = $linha['valor'] * (20/100);
+                $revenda = $linha['valor'] - $desconto;
             }
         ?>
 	    <tr>
