@@ -4,7 +4,7 @@
    require_once "conf/Conexao.php";
    $title = "Lista de Carros";
    $procurar = isset($_POST["procurar"]) ? $_POST["procurar"] : ""; 
-   $cnst = isset($_POST["cnst"]) ? $_POST["cnst"] : "";
+   $cnst = isset($_POST["cnst"]) ? $_POST["cnst"] : "1";
 ?>
 <html>
 <head>
@@ -21,18 +21,21 @@
         <br><br>
         <table>
 	    <tr>
-            <td><b>Id </b></td>
-            <td><b>Nome </b></td>
-            <td><b>valor </b></td>
-            <td><b>km </b></td>
+            <td><b>Id</b></td>
+            <td><b>Nome</b></td>
+            <td><b>valor</b></td>
+            <td><b>km</b></td>
             <td><b>Data de Fabricação </b></td>
             <td><b>Anos de Uso </b></td>
             <td><b>Média km/por ano </b></td>
             <td><b>Valor de Revenda </b></td>
         </tr>
-        <input type="radio" id="1" name="cnst" value="1" <?php if($cnst == "1"){echo "checked";}?>>Nome<br>
-        <input type="radio" id="2" name="cnst" value="2" <?php if($cnst == "2"){echo "checked";}?>>Valor<br>
-        <input type="radio" id="3" name="cnst" value="3" <?php if($cnst == "3"){echo "checked";}?>>Km<br>
+        <fieldset>
+        <legend>Procurar por:</legend>
+           <input type="radio" id="1" name="cnst" value="1" <?php if($cnst == 1) echo "checked" ?>>Nome<br>
+           <input type="radio" id="2" name="cnst" value="2" <?php if($cnst == 2) echo "checked" ?>>Valor<br>
+           <input type="radio" id="3" name="cnst" value="3" <?php if($cnst == 3) echo "checked" ?>>Km<br>
+        </fieldset>
         <?php
             $pdo = Conexao::getInstance();
 
@@ -73,24 +76,22 @@
             }
         
             $revenda = $linha['valor'];
-            if ($uso > 10) {
-                $desconto = $linha['valor'] * (10/100);
-                $revenda = $linha['valor'] - $desconto;
-
-            }else if($linha['km'] > 100000) {
-                $desconto = $linha['valor'] * (10/100);
-                $revenda = $linha['valor'] - $desconto;
-
-            }elseif($linha['km'] > 100000 && $uso > 10){
+            if($linha['km'] > 100000 && $uso > 10){
                 $desconto = $linha['valor'] * (20/100);
                 $revenda = $linha['valor'] - $desconto;
+            
+            
+            }else if($uso > 10 or $linha['km'] > 100000) {
+                $desconto = $linha['valor'] * (10/100);
+                $revenda = $linha['valor'] - $desconto;
+
             }
         ?>
 	    <tr>
             <td><?php echo $linha['id'];?></td>
             <td><?php echo $linha['nome'];?></td>
             <td><?php echo number_format($linha['valor'], 2, ',', '.');?></td>
-            <td class="<?php echo $class;?>"><?php echo number_format($linha['km'], 0, ',', '.');?></td>
+            <td class="<?php echo $class;?>"><?php echo number_format($linha['km'], 1, ',', '.');?></td>
             <td><?php echo date("d/m/y", strtotime($linha['dataFabricacao']));?></td>
             <td class="<?php echo $class1;?>"><?php echo $uso;?></td>
             <td><?php echo number_format($media, 0, ',', '.');?></td>
